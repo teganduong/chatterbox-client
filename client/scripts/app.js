@@ -73,14 +73,14 @@ var app = {
   },
 
   addRoom: function(roomName) {
-    $('#roomSelect').append('<option value=' + roomName + '>' + roomName + '</option>');
+    $('#roomSelect').append('<option>' + roomName + '</option>');
   },
 
   addFriend: function() {
-    var friendName = $(this).attr("name");
+    var friendName = $(this).attr('name');
     if (!(friendName in app.friends)) {
       app.friends[friendName] = friendName;
-      $('#friends').append('<option value=' + friendName + '>' + friendName + '</option>');
+      $('#friends').append('<option>' + friendName + '</option>');
     }
   },
   handleSubmit: function() {
