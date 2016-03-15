@@ -17,9 +17,31 @@
     <div id="main">
       <h1>chatterbox</h1>
       <form method="post">
-        <select id="roomSelect">
-        </select>
+        <label>
+          Room:
+          <select id="roomSelect">
+          </select>
+        </label>
+        <label>
+        Friends:
+          <select id="friends">
+          </select>
+        </label>
       </form>
+      <form>
+        <label>
+          Username:
+          <input type="text" name="message" required>
+        </label>
+      </form>
+      <form>
+        <label>
+          Message:
+          <input type="text" name="message" required>
+          <input type="submit" id="submitButton" name="submit" value="Send">
+          </label>
+      </form>
+
       <!-- Your HTML goes here! -->
     </div>
     <div id="chats"></div>
