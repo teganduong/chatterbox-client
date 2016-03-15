@@ -20,11 +20,14 @@
         <label>
           Room:
           <select id="roomSelect">
+            <option value="lobby" selected>Lobby</option>
+            <option value="addRoom">Add Room</option>
           </select>
         </label>
         <label>
         Friends:
           <select id="friends">
+            <option value="All Friends" selected>All Friends</option>
           </select>
         </label>
       </form>
@@ -38,13 +41,13 @@
         <label>
           Message:
           <input type="text" id="message" name="message" required>
-          <input type="submit" id="submitButton" name="submit" value="Send">
+          <input type="submit" class="submit" id="send" name="submit" value="Send">
           </label>
       </form>
 
       <!-- Your HTML goes here! -->
     </div>
-    <button type="button">Clear Messages</button>
+    <button type="button" id="clear">Clear Messages</button>
     <div id="chats"></div>
 
   </body>
