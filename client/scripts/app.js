@@ -1,4 +1,3 @@
-
 var app = {
   server: 'https://api.parse.com/1/classes/messages',
 
@@ -7,6 +6,7 @@ var app = {
   chatRooms: {},
 
   init: function() {
+    app.clearMessages();
     app.fetch();
   },
 
@@ -30,6 +30,8 @@ var app = {
       url: app.server,
       type: 'GET',
       success: function (data) {
+        app.clearMessages();
+
         _.each(data.results, function(message) {
           app.addMessage(message);
         });
@@ -67,7 +69,7 @@ var app = {
       });
     };
 
-    $('#chats').append('<div class="username" name="' + escape(message.username) + '"><h2>' + escape(message.username) + '</h2><p>' + escape(message.text) + '</p></div>');
+    $('#chats').append('<div class="username" name="' + escape(message.username) + '"><h2>' + escape(message.username) + ':' + '</h2><p>' + escape(message.text) + '</p></div>');
   },
 
   addRoom: function(roomName) {
@@ -82,24 +84,34 @@ var app = {
     }
   },
   handleSubmit: function() {
-    // var message = {
-    //   username: $('username').val(),
-    //   text: $('message').val()
-    // };
-    console.log("test");
-  }
+    var userName = $('#username').val();
+    var userMessage = $('#message').val();
 
+    var message = {
+      'username': userName,
+      'text': userMessage
+    };
+
+    // send message to Parse API
+    app.send(message);
+
+    app.fetch();
+
+  }
 };
 
-$(document).ready(function() {
+app.init();
 
-  $("button").on('click', app.clearMessages);
+setInterval(function() {
+  app.init();
+}, 20000);
 
-  $('#submitButton').on('click', app.handleSubmit);
+$(document).on('click', '#submitButton', function(event) {
+  event.preventDefault();
 
-
+  app.handleSubmit();
 
 });
 
 
-app.init();
+
