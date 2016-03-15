@@ -33,7 +33,14 @@ var app = {
         app.clearMessages();
         _.each(data.results, function(message) {
           app.addMessage(message);
+          app.chatRooms[message.roomname] = message.roomname;
         });
+        for (var roomname in app.chatRooms) {
+          $('#roomSelect').append('<option value="' + escape(roomname) + '">' + escape(roomname) + '</option>');
+        }
+        for (var friend in app.friends) {
+          $('div[value = ' + friend + ']').addClass('friends');
+        }
       },
       error: function (data) {
         console.error('chatterbox: Failed to return message', data);
@@ -64,22 +71,26 @@ var app = {
         return htmlEscapes[match];
       });
     };
-    $('#chats').append('<div class="username" name="' + escape(message.username) + '"><h2>' + escape(message.username) + ':' + '</h2><p>' + escape(message.text) + '</p></div>');
+    $('#chats').append('<div class="username" room="' + escape(message.roomname) + '" value="' + escape(message.username) + '"><h2>' + escape(message.username) + ':' + '</h2><p>' + escape(message.text) + '</p></div>');
   },
 
   addRoom: function(roomName) {
     $('#roomSelect').append('<option value="' + roomName + '">' + roomName + '</option>');
   },
 
-  addFriend: function() {
-    var friendName = $(this).attr('name');
-    $('div[name = ' + friendName + ']').addClass('friends');
+  addFriend: function(eve) {
+    var friendName = $(this).attr('value');
+    $('div[value = ' + friendName + ']').addClass('friends');
     if (!(friendName in app.friends)) {
       app.friends[friendName] = friendName;
       $('#friends').append('<option>' + friendName + '</option>');
     }
     
   },
+  saveRoom: function(event) {
+
+  },
+
   handleSubmit: function() {
     var userName = $('#username').val();
     var userMessage = $('#message').val();
@@ -107,11 +118,24 @@ setInterval(function() {
 
 
 $(document).on('change', 'select', function() {
-  if ($(this).val() === "addRoom") {
+  var selected = $(this).val();
+  if (selected === "addRoom") {
     var newRoom = prompt('Create a room...');
-    app.addRoom(newRoom);
+    if (newRoom.length > 0) {
+      app.addRoom(newRoom);
+    }
   } 
-  _.each($('#chats'));
+  if (selected === "All Friends") {
+    app.fetch();
+  }
+  $('#chats div').each(function(elem) {
+    $(this).show();
+    if ($(this).attr('value') !== selected) {
+      $(this).hide();
+    } else if ($(this).attr('room') !== selected) {
+      $(this).hide();
+    }
+  });
 
 });
 $(document).on('click', '.username', app.addFriend);
