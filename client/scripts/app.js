@@ -128,8 +128,9 @@ $(document).on('change', 'select', function() {
     var newRoom = prompt('Create a room...');
     if (newRoom.length > 0) {
       app.addRoom(newRoom);
+      app.currentRoom = selected;
     }
-  } else {
+  } else if (selected in app.chatRooms) {
     app.currentRoom = selected;
     app.fetch();
   }

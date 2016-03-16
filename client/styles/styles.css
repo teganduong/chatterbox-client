@@ -11,8 +11,9 @@ body {
     text-align: left;
     background: white;
     padding: 50px 60px;
-    border: solid #ddd;
+    border: 2px solid gray;
     border-width: 0 1px 1px 1px;
+    background-color: #11A8B2;
 }
 
 #main h1 {
@@ -47,9 +48,8 @@ body {
 }
 
 form {
-    padding: 20px;
+    padding: 10px;
     padding-left: 0;
-    margin-bottom: 20px;
 }
 
 form input[type=text] {
@@ -83,6 +83,57 @@ form input[type=text] {
     padding: 10px;
 }
 
+
+#chats {
+    width: 620px;
+    height: 500px;
+    padding: 0;
+    overflow: scroll;
+}
+#chats .username {
+    padding: 0 50px;
+    border-bottom: 1px solid black;
+}
+
+#clear {
+    width: 622px;
+    padding: 10px 50px;
+    margin: auto;
+    font-size: 16px;
+    font-weight: bold;
+    border: 2px solid gray;
+    background-color: #0EC296;
+}
+
+label {
+    padding: 20px;
+    text-align: right;
+}
+
+#send {
+    width: 100px;
+    height: 50px;
+    margin-top: 20px;
+    margin-left: 200px;
+    padding: 20px;
+    position: center;
+}
+
+#username {
+    width: 300px;
+}
+
+h2 {
+    font-size: 15px;
+}
+
+h2, p {
+    margin: 10px 0;
+}
+
+p {
+    font-size: 12px;
+}
 .friends {
-    background-color: gray;
+    background-color: #938ABA;
 }
