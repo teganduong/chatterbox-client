@@ -2,12 +2,18 @@ var app = {
   server: 'https://api.parse.com/1/classes/messages',
 
   friends: {},
-
+  currentFriend: "All Friends",
   chatRooms: {},
+  currentRoom: "lobby",
+  username: 'anonymous',
 
   init: function() {
     app.clearMessages();
     app.fetch();
+    setTimeout(app.populateRoom, 300);
+    setInterval(function() {
+      app.fetch();
+    }, 2000);
   },
 
   send: function(message) {
@@ -18,6 +24,7 @@ var app = {
       contentType: 'application/json',
       success: function (data) {
         console.log('chatterbox: Message sent');
+        app.fetch();
       },
       error: function (data) {
         console.error('chatterbox: Failed to send message', data);
@@ -35,11 +42,8 @@ var app = {
           app.addMessage(message);
           app.chatRooms[message.roomname] = message.roomname;
         });
-        for (var roomname in app.chatRooms) {
-          $('#roomSelect').append('<option value="' + escape(roomname) + '">' + escape(roomname) + '</option>');
-        }
-        for (var friend in app.friends) {
-          $('div[value = ' + friend + ']').addClass('friends');
+        for (var friends in app.friends) {
+          $('div[value = ' + friends + ']').addClass('friends');
         }
       },
       error: function (data) {
@@ -71,15 +75,20 @@ var app = {
         return htmlEscapes[match];
       });
     };
-    $('#chats').append('<div class="username" room="' + escape(message.roomname) + '" value="' + escape(message.username) + '"><h2>' + escape(message.username) + ':' + '</h2><p>' + escape(message.text) + '</p></div>');
+
+    if (message.roomname === app.currentRoom) {
+      $('#chats').append('<div class="username" room="' + escape(message.roomname) + '" value="' + escape(message.username) + '"><h2>' + escape(message.username) + ':' + '</h2><p>' + escape(message.text) + '</p></div>');
+    }
+
   },
 
   addRoom: function(roomName) {
     $('#roomSelect').append('<option value="' + roomName + '">' + roomName + '</option>');
   },
 
-  addFriend: function(eve) {
+  addFriend: function() {
     var friendName = $(this).attr('value');
+    //wont work correctly if user has space or a chracter other than letters
     $('div[value = ' + friendName + ']').addClass('friends');
     if (!(friendName in app.friends)) {
       app.friends[friendName] = friendName;
@@ -91,8 +100,14 @@ var app = {
 
   },
 
+  populateRoom: function() {
+    for (var roomname in app.chatRooms) { 
+      app.addRoom(roomname);
+    }
+  },
+
   handleSubmit: function() {
-    var userName = $('#username').val();
+    var userName = $('#username').val() || app.username;
     var userMessage = $('#message').val();
     var roomName = $('#roomSelect option:selected').val();
 
@@ -101,21 +116,11 @@ var app = {
       'text': userMessage,
       'roomname': roomName
     };
-
     // send message to Parse API
     app.send(message);
-
     app.fetch();
-
   }
 };
-
-app.init();
-
-setInterval(function() {
-  app.init();
-}, 20000);
-
 
 $(document).on('change', 'select', function() {
   var selected = $(this).val();
@@ -124,19 +129,10 @@ $(document).on('change', 'select', function() {
     if (newRoom.length > 0) {
       app.addRoom(newRoom);
     }
-  } 
-  if (selected === "All Friends") {
+  } else {
+    app.currentRoom = selected;
     app.fetch();
   }
-  $('#chats div').each(function(elem) {
-    $(this).show();
-    if ($(this).attr('value') !== selected) {
-      $(this).hide();
-    } else if ($(this).attr('room') !== selected) {
-      $(this).hide();
-    }
-  });
-
 });
 $(document).on('click', '.username', app.addFriend);
 $(document).on('click', '#clear', app.clearMessages);
